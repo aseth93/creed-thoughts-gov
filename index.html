@@ -32,6 +32,7 @@
             text-align: center;
             max-width: 500px;
             position: relative;
+            z-index: 10;
         }
 
         .cat {
@@ -169,6 +170,52 @@
             text-align: center;
             line-height: 1.5;
             max-width: 400px;
+            z-index: 10;
+        }
+
+        .background-photos {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-photo {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            object-position: top;
+            border-radius: 15px;
+            opacity: 0.35;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .bg-photo1 {
+            top: 3%;
+            left: 3%;
+            transform: rotate(-8deg);
+        }
+
+        .bg-photo2 {
+            top: 5%;
+            right: 3%;
+            transform: rotate(6deg);
+        }
+
+        .bg-photo3 {
+            bottom: 3%;
+            left: 5%;
+            transform: rotate(-5deg);
+        }
+
+        .bg-photo4 {
+            bottom: 5%;
+            right: 5%;
+            transform: rotate(7deg);
         }
 
         .celebration {
@@ -217,6 +264,7 @@
             padding: 20px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
+            z-index: 10;
         }
 
         .video-box iframe {
@@ -291,6 +339,13 @@
     </style>
 </head>
 <body>
+    <div class="background-photos">
+        <img src="photo1.jpeg" class="bg-photo bg-photo1" alt="">
+        <img src="photo2.jpeg" class="bg-photo bg-photo2" alt="">
+        <img src="photo3.jpeg" class="bg-photo bg-photo3" alt="">
+        <img src="momo.jpeg" class="bg-photo bg-photo4" alt="">
+    </div>
+
     <p class="top-message">i hope you smiled for a few seconds. this has been so hard. i hope you are doing ok.</p>
 
     <div class="card">
