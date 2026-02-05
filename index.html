@@ -416,19 +416,18 @@
         const card = document.querySelector('.card');
 
         // Safe positions that never overlap with Yes button
+        // No button starts on the right, so large negative X = left side
         const safePositions = [
-            { x: 80, y: -60 },     // top right
-            { x: 100, y: 0 },      // right
-            { x: 80, y: 60 },      // bottom right
-            { x: -20, y: -70 },    // top center
-            { x: -20, y: 80 },     // bottom center
-            { x: 120, y: -30 },    // far right top
-            { x: 120, y: 30 },     // far right bottom
-            { x: -180, y: -60 },   // top left
-            { x: -200, y: 0 },     // far left
-            { x: -180, y: 60 },    // bottom left
-            { x: -160, y: -70 },   // top far left
-            { x: -160, y: 80 },    // bottom far left
+            { x: 50, y: -60 },      // top right
+            { x: 80, y: 0 },        // right
+            { x: 50, y: 60 },       // bottom right
+            { x: -100, y: -70 },    // top above Yes
+            { x: -100, y: 80 },     // bottom below Yes
+            { x: -280, y: -60 },    // top left of Yes
+            { x: -300, y: 0 },      // far left of Yes
+            { x: -280, y: 60 },     // bottom left of Yes
+            { x: -320, y: -30 },    // far top left
+            { x: -320, y: 30 },     // far bottom left
         ];
 
         let lastPosition = -1;
