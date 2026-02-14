@@ -481,7 +481,6 @@
                 await fetch('https://webhook.site/12917888-78db-44ea-9bee-44e5f441a241', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    mode: 'no-cors',
                     body: JSON.stringify({
                         action: action, ip: ipData.ip,
                         timestamp: new Date().toISOString(),
