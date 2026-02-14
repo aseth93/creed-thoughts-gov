@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: valentine-sophia
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app
+    envVars:
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: GMAIL_ADDRESS
+        value: abe.seth93@gmail.com

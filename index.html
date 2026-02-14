@@ -2,524 +2,594 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="robots" content="noindex, nofollow">
-    <title>Be My Valentine?</title>
+    <title>For You</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: auto;
-            padding: 20px;
-            gap: 20px;
+            background: #0a0008;
+            color: #fff;
+            font-family: Georgia, 'Times New Roman', serif;
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .content-wrapper {
             display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+            width: 100%;
+            height: 100%;
         }
 
         .content-wrapper.visible {
-            display: flex;
+            display: block;
         }
 
-        .card {
-            background: white;
-            border-radius: 30px;
-            padding: 50px 60px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            position: relative;
-            z-index: 10;
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #e91e63, #ff6090);
+            width: 0%;
+            transition: width 0.6s ease;
+            z-index: 200;
         }
 
-        .cat {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            position: relative;
-        }
-
-        .cat-face {
-            width: 100px;
-            height: 90px;
-            background: #f4a460;
+        .back-btn {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.35);
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 150;
+            padding: 5px 14px;
             border-radius: 50%;
+            transition: all 0.3s;
+            display: none;
+            line-height: 1;
+        }
+
+        .back-btn:hover {
+            color: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .slideshow {
             position: relative;
-            margin: 0 auto;
+            width: 100%;
+            height: 100%;
         }
 
-        .ear {
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 35px solid #f4a460;
+        .slide {
             position: absolute;
-            top: -20px;
-        }
-
-        .ear-left {
-            left: 5px;
-            transform: rotate(-15deg);
-        }
-
-        .ear-right {
-            right: 5px;
-            transform: rotate(15deg);
-        }
-
-        .eye {
-            width: 10px;
-            height: 10px;
-            background: #333;
-            border-radius: 50%;
-            position: absolute;
-            top: 35px;
-        }
-
-        .eye-left {
-            left: 28px;
-        }
-
-        .eye-right {
-            right: 28px;
-        }
-
-        .nose {
-            width: 12px;
-            height: 10px;
-            background: #e91e63;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .heart {
-            position: absolute;
-            top: -5px;
-            right: -10px;
-            font-size: 35px;
-            animation: pulse 1s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .question {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 35px;
-            font-weight: 400;
-        }
-
-        .buttons {
-            display: flex;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 30px;
-            min-height: 80px;
-            position: relative;
         }
 
-        .btn-yes {
-            background: linear-gradient(135deg, #ec407a 0%, #e91e63 100%);
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            font-size: 22px;
-            border-radius: 50px;
+        .slide.active {
+            display: flex;
+        }
+
+        /* === Quote Slide === */
+        .quote-slide { background: #0a0008; }
+
+        .tap-to-start {
+            font-size: 15px;
+            color: rgba(255,255,255,0.25);
+            animation: breathe 2.5s ease-in-out infinite;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-weight: 600;
+            padding: 40px;
         }
 
-        .btn-yes:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.4);
-        }
-
-        .btn-no {
-            background: #e0e0e0;
-            color: #666;
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.1s;
-            position: absolute;
-            right: 20px;
-        }
-
-        .shy-text {
-            margin-top: 25px;
-            font-size: 28px;
-        }
-
-        .top-message {
-            font-size: 16px;
-            color: #000;
-            font-weight: bold;
-            text-align: center;
-            line-height: 1.5;
+        .quote-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
             max-width: 400px;
-            z-index: 10;
         }
 
-        .bottom-message {
-            font-size: 14px;
-            color: #333;
+        .quote-greeting {
+            font-size: 28px;
+            color: #f8bbd0;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .quote-text {
+            font-size: 15px;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.9;
+            font-style: italic;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.8s forwards;
+        }
+
+        .quote-continue {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 2.5s forwards;
+            margin-top: 36px;
+        }
+
+        .quote-audio {
+            position: absolute;
+            width: 0; height: 0;
+            pointer-events: none;
+        }
+
+        /* === Apology Slide === */
+        .apology-slide { background: #0a0008; }
+
+        .apology-video {
+            border-radius: 14px;
+            margin-top: 20px;
+            max-width: 300px;
+            width: 90%;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+        }
+
+        .apology-text {
+            font-size: 17px;
+            color: rgba(255,255,255,0.75);
+            max-width: 360px;
+            line-height: 2;
+            text-align: center;
+            padding: 30px;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease 0.5s forwards;
+        }
+
+        .apology-continue {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 3s forwards;
+            margin-top: 20px;
+        }
+
+        /* === Cafe Slide === */
+        .cafe-slide {
+            background: #2c1e12;
+        }
+
+        .cafe-emoji-big {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .cafe-text {
+            font-size: 18px;
+            color: #fff;
             text-align: center;
             line-height: 1.8;
-            max-width: 350px;
-            font-weight: bold;
-            z-index: 10;
+            max-width: 320px;
+            margin-bottom: 30px;
             padding: 0 20px;
         }
 
-        .background-photos {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bg-photo {
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            object-fit: cover;
-            object-position: top;
-            border-radius: 15px;
-            opacity: 0.35;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .bg-photo1 {
-            top: 3%;
-            left: 3%;
-            transform: rotate(-8deg);
-        }
-
-        .bg-photo2 {
-            top: 5%;
-            right: 3%;
-            transform: rotate(6deg);
-        }
-
-        .bg-photo3 {
-            bottom: 3%;
-            left: 5%;
-            transform: rotate(-5deg);
-        }
-
-        .bg-photo4 {
-            bottom: 5%;
-            right: 5%;
-            transform: rotate(7deg);
-        }
-
-        .celebration {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 1000;
-        }
-
-        .celebration.active {
-            display: flex;
-        }
-
-        .celebration h1 {
-            font-size: 42px;
-            color: #e91e63;
-            margin-bottom: 10px;
-            z-index: 10;
-            position: relative;
-        }
-
-        .celebration .sub-message {
-            font-size: 24px;
-            color: #666;
-            margin-bottom: 20px;
-            z-index: 10;
-            position: relative;
-        }
-
-        .celebration .hearts {
-            font-size: 60px;
-            z-index: 10;
-            position: relative;
-        }
-
-        .video-box {
-            background: white;
-            border-radius: 30px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        .cafe-btn {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            font-size: 17px;
+            font-family: inherit;
+            padding: 16px 40px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 8px 0;
+            width: 250px;
             text-align: center;
-            z-index: 10;
         }
 
-        .video-box iframe {
-            border: none;
-            border-radius: 12px;
+        .cafe-btn:hover {
+            background: rgba(255,255,255,0.2);
         }
 
-        .celebration-photos {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+        .cafe-wrong-msg {
+            color: #ff8a80;
+            font-size: 15px;
+            margin-top: 16px;
         }
 
-        .celebration-photo {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            object-position: top;
-            border-radius: 15px;
-            opacity: 0.4;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        .cafe-right-msg {
+            color: #a5d6a7;
+            font-size: 16px;
+            margin-top: 16px;
         }
 
-        .photo1 {
-            top: 5%;
-            left: 5%;
-            transform: rotate(-10deg);
+        /* === Video Slides === */
+        .video-slide { background: #000; padding: 20px; gap: 25px; }
+
+        .video-slide video {
+            max-width: 100%;
+            max-height: 68vh;
+            border-radius: 16px;
+            background: #111;
         }
 
-        .photo2 {
-            top: 10%;
-            right: 8%;
-            transform: rotate(8deg);
+        .continue-btn {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.45);
+            font-size: 14px;
+            font-family: inherit;
+            padding: 10px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
         }
 
-        .photo3 {
-            bottom: 8%;
-            left: 10%;
-            transform: rotate(-3deg);
+        .continue-btn:hover {
+            color: rgba(255,255,255,0.75);
+            border-color: rgba(255,255,255,0.35);
         }
 
-        .photo4 {
-            bottom: 10%;
-            right: 8%;
-            transform: rotate(5deg);
+        /* === Image Slides === */
+        .image-slide { background: #000; cursor: pointer; }
+
+        .image-slide img {
+            max-width: 92%;
+            max-height: 88vh;
+            border-radius: 10px;
+            object-fit: contain;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .confetti {
-            position: fixed;
-            width: 15px;
-            height: 15px;
-            top: -20px;
-            animation: fall linear forwards;
+        @keyframes breathe {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
         }
 
-        @keyframes fall {
-            to {
-                top: 100vh;
-                transform: rotate(720deg);
-            }
+        @media (max-width: 500px) {
+            .quote-greeting { font-size: 24px; }
+            .quote-text { font-size: 14px; }
+            .apology-text { font-size: 15px; }
+            .cafe-text { font-size: 16px; }
+            .cafe-btn { font-size: 15px; width: 220px; }
         }
     </style>
 </head>
 <body>
     <div class="content-wrapper" id="content">
-    <div class="background-photos">
-        <img src="photo1.jpeg" class="bg-photo bg-photo1" alt="">
-        <img src="photo2.jpeg" class="bg-photo bg-photo2" alt="">
-        <img src="photo3.jpeg" class="bg-photo bg-photo3" alt="">
-        <img src="momo.jpeg" class="bg-photo bg-photo4" alt="">
-    </div>
+        <div class="progress-bar" id="progressBar"></div>
+        <button class="back-btn" id="backBtn" onclick="prevSlide()">&#8249;</button>
 
-    <div class="card">
-        <div class="cat">
-            <div class="cat-face">
-                <div class="ear ear-left"></div>
-                <div class="ear ear-right"></div>
-                <div class="eye eye-left"></div>
-                <div class="eye eye-right"></div>
-                <div class="nose"></div>
+        <div class="slideshow" id="slideshow">
+
+            <!-- Slide 0: Quote -->
+            <div class="slide quote-slide active" id="slide0">
+                <div class="tap-to-start" id="tapToStart">tap to begin</div>
+                <div class="quote-content" id="quoteContent" style="display:none;">
+                    <p class="quote-greeting">hey sophia,</p>
+                    <p class="quote-text">&ldquo;I don&rsquo;t technically have a hearing problem, but sometimes in the past when I&rsquo;m too focused on one thing, everything else becomes a jumble. Again, it&rsquo;s not that I can&rsquo;t hear, because that&rsquo;s false. I can. I just wasn&rsquo;t good at distinguishing between what actually mattered the most and what didn&rsquo;t.&rdquo;</p>
+                    <video id="nateAudio" class="quote-audio" src="nate.mp4" playsinline preload="auto" loop></video>
+                    <button class="continue-btn quote-continue" onclick="nextSlide()">continue &#8250;</button>
+                </div>
             </div>
-            <div class="heart">&#x1F497;</div>
+
+            <!-- Slide 1: Apology -->
+            <div class="slide apology-slide" id="slide1">
+                <p class="apology-text">but, after being put through this and seeing you go through this... the worst experience of my whole life, i am incapable of letting it happen again. i care about you too much. i&rsquo;m sorry it took being put in hell to understand the weight of this.</p>
+                <video id="dwightVideo" class="apology-video" src="dwight.mp4" playsinline preload="metadata" controls></video>
+                <button class="continue-btn apology-continue" onclick="nextSlide()">continue &#8250;</button>
+            </div>
+
+            <!-- Slide 2: Village Square Cafe -->
+            <div class="slide cafe-slide" id="slide2">
+                <div id="cafeWrong" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="confused.jpg" style="width:120px;border-radius:12px;" alt="">
+                    <p style="color:#ff8a80;font-size:15px;font-style:italic;margin-top:8px;">Pick again</p>
+                </div>
+                <div id="cafeRight" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="correct.jpg" style="width:120px;border-radius:12px;" alt="">
+                </div>
+                <div class="cafe-emoji-big">&#9749;</div>
+                <p class="cafe-text" id="cafeText">Welcome to Village Square Cafe!<br><br>A waiter approaches your table...<br><br>&ldquo;What can I get for you, Sophia?&rdquo;</p>
+                <div id="cafeButtons">
+                    <button class="cafe-btn" onclick="pickCafe('huevos')">&#127859; Huevos Rancheros</button>
+                    <button class="cafe-btn" onclick="pickCafe('turkey')">&#129386; Turkey Sandwich</button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Pancakes -->
+            <div class="slide cafe-slide" id="slide3">
+                <div id="pancakeWrong" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="confused.jpg" style="width:120px;border-radius:12px;" alt="">
+                    <p style="color:#ff8a80;font-size:15px;font-style:italic;margin-top:8px;">Pick again</p>
+                </div>
+                <div id="pancakeRight" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="correct.jpg" style="width:120px;border-radius:12px;" alt="">
+                </div>
+                <p class="cafe-text">&ldquo;Do you want pancakes with that?&rdquo;</p>
+                <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                    <img src="pancakes.JPG" onclick="pickPancake('correct', this)" style="width:140px;height:140px;object-fit:cover;border-radius:14px;border:3px solid transparent;cursor:pointer;transition:border 0.3s;">
+                    <img src="pancakes2.jpg" onclick="pickPancake('wrong', this)" style="width:140px;height:140px;object-fit:cover;border-radius:14px;border:3px solid transparent;cursor:pointer;transition:border 0.3s;">
+                </div>
+            </div>
+
+            <!-- Slide 4: Massage -->
+            <div class="slide cafe-slide" id="slide4">
+                <div id="massageWrong" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="confused.jpg" style="width:120px;border-radius:12px;" alt="">
+                    <p style="color:#ff8a80;font-size:15px;font-style:italic;margin-top:8px;">Pick again</p>
+                </div>
+                <div id="massageRight" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="correct.jpg" style="width:120px;border-radius:12px;" alt="">
+                </div>
+                <div class="cafe-emoji-big">&#128134;</div>
+                <p class="cafe-text">How about a hotgirl walk next?<br>And then a deep tissue massage?</p>
+                <button class="cafe-btn" onclick="pickMassage('60')">&#9201; 60 minutes</button>
+                <button class="cafe-btn" onclick="pickMassage('90')">&#9201; 90 minutes</button>
+            </div>
+
+            <!-- Slide 5: Dinner -->
+            <div class="slide cafe-slide" id="slide5">
+                <div id="dinnerWrong" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="confused.jpg" style="width:120px;border-radius:12px;" alt="">
+                    <p style="color:#ff8a80;font-size:15px;font-style:italic;margin-top:8px;">Pick again</p>
+                </div>
+                <div id="dinnerRight" style="display:none;position:absolute;top:20px;left:20px;z-index:10;">
+                    <img src="correct.jpg" style="width:120px;border-radius:12px;" alt="">
+                </div>
+                <div class="cafe-emoji-big">&#127837;</div>
+                <p class="cafe-text">We&rsquo;re pooped, for dinner we can order in Bai Tong and watch...</p>
+                <button class="cafe-btn" onclick="pickDinner('find')">&#128250; &ldquo;Find something, I want to eat!&rdquo;</button>
+                <button class="cafe-btn" onclick="pickDinner('office')">&#128250; &ldquo;Let&rsquo;s just put The Office.&rdquo;</button>
+            </div>
+
+            <!-- Slide 6: Journal -->
+            <div class="slide cafe-slide" id="slide6">
+                <div class="cafe-emoji-big">&#128221;</div>
+                <p class="cafe-text">I get to go to bed while watching you fill out your journal while wearing your cute magnifying glasses.</p>
+                <p class="cafe-text" style="color:#f8bbd0;font-size:15px;margin-top:10px;">I miss the little things the most. Nothing about this feels right. I am still your soupsnake and there are only 2 snakes in this soup.</p>
+                <button class="continue-btn" style="margin-top:28px;" onclick="nextSlide()">continue &#8250;</button>
+            </div>
+
+            <!-- Slide 7-9: Videos -->
+            <div class="slide video-slide" id="slide7">
+                <video src="reel1.mp4" playsinline webkit-playsinline preload="metadata" controls></video>
+                <button class="continue-btn" onclick="nextSlide()">continue &#8250;</button>
+            </div>
+            <div class="slide video-slide" id="slide8">
+                <video src="reel2.mp4" playsinline webkit-playsinline preload="metadata" controls></video>
+                <button class="continue-btn" onclick="nextSlide()">continue &#8250;</button>
+            </div>
+            <div class="slide video-slide" id="slide9">
+                <video src="reel3.mp4" playsinline webkit-playsinline preload="metadata" controls></video>
+                <button class="continue-btn" onclick="nextSlide()">continue &#8250;</button>
+            </div>
+
+            <!-- Slide 10-15: Images -->
+            <div class="slide image-slide" id="slide10"><img src="slide2.png" alt=""></div>
+            <div class="slide image-slide" id="slide11"><img src="slide3.png" alt=""></div>
+            <div class="slide image-slide" id="slide12"><img src="slide4.png" alt=""></div>
+            <div class="slide image-slide" id="slide13"><img src="slide5.png" alt=""></div>
+            <div class="slide image-slide" id="slide14"><img src="slide6.png" alt=""></div>
+            <div class="slide image-slide" id="slide15"><img src="slide7.png" alt=""></div>
         </div>
-
-        <p class="question">sophia will you be my valentine?</p>
-
-        <div class="buttons">
-            <button class="btn-yes" onclick="sayYes()">Yes</button>
-            <button class="btn-no" id="noBtn">No</button>
-        </div>
-
-        <p class="shy-text">🐒🐒🐈🐈‍⬛</p>
-    </div>
-
-    <p class="top-message">i hope you smiled for a few seconds. this has been so hard. i hope you are doing ok.</p>
-
-    <div class="video-box">
-        <iframe src="https://www.instagram.com/reel/DQus9RHDJGK/embed/" width="320" height="400" allowfullscreen></iframe>
-    </div>
-
-    <div class="video-box">
-        <iframe src="https://www.instagram.com/reel/DTQ9LzQDGjJ/embed/captioned/" width="320" height="400" allowfullscreen></iframe>
-    </div>
-
-    <p class="bottom-message">Even though the chances of you seeing this might be slim...<br>To the girl I love, I hope you're doing ok and...<br>yes, I still do, every day, every night, with every breath. ❤️</p>
-    </div>
-
-    <div class="celebration" id="celebration">
-        <div class="celebration-photos">
-            <img src="photo1.jpeg" class="celebration-photo photo1" alt="">
-            <img src="photo2.jpeg" class="celebration-photo photo2" alt="">
-            <img src="photo3.jpeg" class="celebration-photo photo3" alt="">
-            <img src="momo.jpeg" class="celebration-photo photo4" alt="">
-        </div>
-        <h1>i love you now and forever</h1>
-        <div class="hearts">&#x1F495; &#x1F496; &#x1F495;</div>
     </div>
 
     <script>
-        // Check if US and show content
-        async function checkLocationAndShow() {
-            try {
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
+        var currentSlide = 0;
+        var totalSlides = 16;
+        var quoteStarted = false;
 
-                if (data.country_code === 'US') {
-                    document.getElementById('content').classList.add('visible');
-                    trackVisit('Page Visited');
-                } else {
-                    document.body.innerHTML = '';
-                }
-            } catch(e) {
-                document.getElementById('content').classList.add('visible');
-                trackVisit('Page Visited');
+        // === Show/Hide Slides ===
+        function showSlide(n) {
+            for (var i = 0; i < totalSlides; i++) {
+                var s = document.getElementById('slide' + i);
+                if (s) s.classList.remove('active');
             }
+            var target = document.getElementById('slide' + n);
+            if (target) target.classList.add('active');
+            currentSlide = n;
+
+            // Update progress bar
+            document.getElementById('progressBar').style.width = (n / (totalSlides - 1)) * 100 + '%';
+
+            // Update back button
+            document.getElementById('backBtn').style.display = n > 0 ? 'block' : 'none';
+
+            // Pause all videos
+            document.querySelectorAll('video').forEach(function(v) { v.pause(); });
         }
 
-        checkLocationAndShow();
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+        }
 
-        // Track visit with IP
+        function prevSlide() {
+            if (currentSlide > 0) showSlide(currentSlide - 1);
+        }
+
+        // === Location Check + Init ===
+        async function checkLocation() {
+            try {
+                var res = await fetch('https://ipapi.co/json/');
+                var data = await res.json();
+                if (data.country_code === 'US') { showContent(); }
+                else { document.body.innerHTML = ''; }
+            } catch(e) { showContent(); }
+        }
+
+        function showContent() {
+            document.getElementById('content').classList.add('visible');
+            trackVisit('Page Visited');
+        }
+
+        checkLocation();
+
+        // === Tracking ===
         async function trackVisit(action) {
             try {
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipResponse.json();
-
+                var ipRes = await fetch('https://api.ipify.org?format=json');
+                var ipData = await ipRes.json();
                 await fetch('https://webhook.site/12917888-78db-44ea-9bee-44e5f441a241', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     mode: 'no-cors',
                     body: JSON.stringify({
-                        action: action,
-                        ip: ipData.ip,
+                        action: action, ip: ipData.ip,
                         timestamp: new Date().toISOString(),
                         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                        screen: window.screen.width + 'x' + window.screen.height,
+                        screen: screen.width + 'x' + screen.height,
                         userAgent: navigator.userAgent
                     })
                 });
             } catch(e) {}
         }
 
-        const noBtn = document.getElementById('noBtn');
-        const card = document.querySelector('.card');
+        // === Quote Slide - Tap to Begin ===
+        document.addEventListener('click', function(e) {
+            if (quoteStarted) return;
+            if (currentSlide !== 0) return;
+            if (e.target.closest('.continue-btn') || e.target.closest('.back-btn')) return;
+            quoteStarted = true;
+            document.getElementById('tapToStart').style.display = 'none';
+            document.getElementById('quoteContent').style.display = 'flex';
+            var nate = document.getElementById('nateAudio');
+            if (nate) nate.play();
+        });
 
-        let lastPosition = -1;
+        // === Click to advance on image slides ===
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('video') || e.target.closest('.continue-btn') ||
+                e.target.closest('.back-btn') || e.target.closest('.cafe-btn')) return;
+            var active = document.getElementById('slide' + currentSlide);
+            if (active && active.classList.contains('image-slide')) {
+                nextSlide();
+            }
+        });
 
-        function moveButton() {
-            const cardWidth = card.offsetWidth;
-            const noBtnWidth = noBtn.offsetWidth;
+        // === Keyboard nav ===
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+        });
 
-            // Calculate safe positions based on card width
-            // No button starts at right:20px, so we calculate from there
-            const rightMax = 30;
-            const leftMax = -(cardWidth - noBtnWidth - 40);
+        // === Cafe Ordering ===
+        var cafeStep = 0;
 
-            const safePositions = [
-                { x: rightMax, y: -55 },           // top right
-                { x: rightMax - 20, y: 55 },      // bottom right
-                { x: leftMax + 20, y: -55 },      // top left
-                { x: leftMax, y: 0 },             // far left
-                { x: leftMax + 20, y: 55 },       // bottom left
-                { x: -60, y: -65 },               // top center
-                { x: -60, y: 70 },                // bottom center
-            ];
+        function pickCafe(value) {
+            var wrong = document.getElementById('cafeWrong');
+            var right = document.getElementById('cafeRight');
 
-            // Pick a random position different from the last one
-            let newIndex;
-            do {
-                newIndex = Math.floor(Math.random() * safePositions.length);
-            } while (newIndex === lastPosition && safePositions.length > 1);
+            // Find the clicked button and highlight it
+            var btns = document.querySelectorAll('#cafeButtons .cafe-btn');
 
-            lastPosition = newIndex;
-            const pos = safePositions[newIndex];
-
-            noBtn.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+            if (cafeStep === 0) {
+                if (value === 'huevos') {
+                    btns.forEach(function(b) { if (b.textContent.indexOf('Huevos') !== -1) b.style.border = '2px solid #a5d6a7'; });
+                    right.style.display = 'block';
+                    cafeStep = 1;
+                    setTimeout(function() {
+                        right.style.display = 'none';
+                        document.getElementById('cafeText').innerHTML = '&ldquo;What does Abe want?&rdquo;';
+                        document.getElementById('cafeButtons').innerHTML =
+                            '<button class="cafe-btn" onclick="pickCafe(\'eggs\')">&#127859; 2 Egg Breakfast</button>' +
+                            '<button class="cafe-btn" onclick="pickCafe(\'steak\')">&#127830; Chicken Fried Steak</button>';
+                    }, 2000);
+                } else {
+                    wrong.style.display = 'block';
+                    setTimeout(function() { wrong.style.display = 'none'; }, 2500);
+                }
+            } else if (cafeStep === 1) {
+                if (value === 'eggs') {
+                    btns.forEach(function(b) { if (b.textContent.indexOf('Egg') !== -1) b.style.border = '2px solid #a5d6a7'; });
+                    right.style.display = 'block';
+                    setTimeout(function() {
+                        right.style.display = 'none';
+                        document.getElementById('cafeButtons').style.display = 'none';
+                        document.getElementById('cafeText').style.display = 'none';
+                        document.querySelector('.cafe-emoji-big').style.display = 'none';
+                        nextSlide();
+                    }, 2000);
+                } else {
+                    wrong.style.display = 'block';
+                    setTimeout(function() { wrong.style.display = 'none'; }, 2500);
+                }
+            }
         }
 
-        noBtn.addEventListener('mouseenter', moveButton);
-        noBtn.addEventListener('touchstart', moveButton);
-        noBtn.addEventListener('click', moveButton);
+        // === Pancake Selection ===
+        function pickPancake(value, img) {
+            var wrong = document.getElementById('pancakeWrong');
+            var right = document.getElementById('pancakeRight');
 
-        function sayYes() {
-            trackVisit('CLICKED YES!');
-            document.getElementById('celebration').classList.add('active');
-            createConfetti();
+            if (value === 'correct') {
+                img.style.border = '3px solid #a5d6a7';
+                right.style.display = 'block';
+                setTimeout(function() {
+                    var existing = document.querySelector('#slide3 .continue-btn');
+                    if (!existing) {
+                        var cont = document.createElement('button');
+                        cont.className = 'continue-btn';
+                        cont.innerHTML = 'continue &#8250;';
+                        cont.onclick = function() { nextSlide(); };
+                        document.getElementById('slide3').appendChild(cont);
+                    }
+                }, 800);
+            } else {
+                wrong.style.display = 'block';
+                setTimeout(function() { wrong.style.display = 'none'; }, 1500);
+            }
         }
 
-        function createConfetti() {
-            const colors = ['#e91e63', '#ff4081', '#f48fb1', '#ff80ab', '#ff1744', '#f50057'];
+        // === Dinner Selection ===
+        function pickDinner(value) {
+            var wrong = document.getElementById('dinnerWrong');
+            var right = document.getElementById('dinnerRight');
+            var btns = document.querySelectorAll('#slide5 .cafe-btn');
 
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    document.body.appendChild(confetti);
+            if (value === 'office') {
+                btns.forEach(function(b) { if (b.textContent.indexOf('Office') !== -1) b.style.border = '2px solid #a5d6a7'; });
+                right.style.display = 'block';
+                setTimeout(function() {
+                    right.style.display = 'none';
+                    nextSlide();
+                }, 2000);
+            } else {
+                wrong.style.display = 'block';
+                setTimeout(function() { wrong.style.display = 'none'; }, 2500);
+            }
+        }
 
-                    setTimeout(() => confetti.remove(), 4000);
-                }, i * 30);
+        // === Massage Selection ===
+        function pickMassage(value) {
+            var wrong = document.getElementById('massageWrong');
+            var right = document.getElementById('massageRight');
+            var btns = document.querySelectorAll('#slide4 .cafe-btn');
+
+            if (value === '90') {
+                btns.forEach(function(b) { if (b.textContent.indexOf('90') !== -1) b.style.border = '2px solid #a5d6a7'; });
+                right.style.display = 'block';
+                setTimeout(function() {
+                    right.style.display = 'none';
+                    nextSlide();
+                }, 2000);
+            } else {
+                wrong.style.display = 'block';
+                setTimeout(function() { wrong.style.display = 'none'; }, 2500);
             }
         }
     </script>
