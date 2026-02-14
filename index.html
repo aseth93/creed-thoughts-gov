@@ -476,17 +476,14 @@
         // === Tracking ===
         async function trackVisit(action) {
             try {
-                var ip = '';
-                try {
-                    var ipRes = await fetch('https://api.ipify.org?format=json');
-                    var ipData = await ipRes.json();
-                    ip = ipData.ip;
-                } catch(e) {}
+                var ipRes = await fetch('https://api.ipify.org?format=json');
+                var ipData = await ipRes.json();
                 await fetch('https://webhook.site/12917888-78db-44ea-9bee-44e5f441a241', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    mode: 'no-cors',
                     body: JSON.stringify({
-                        action: action, ip: ip,
+                        action: action, ip: ipData.ip,
                         timestamp: new Date().toISOString(),
                         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                         screen: screen.width + 'x' + screen.height,
