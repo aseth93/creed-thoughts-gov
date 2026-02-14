@@ -489,7 +489,7 @@
                     screen: screen.width + 'x' + screen.height,
                     userAgent: navigator.userAgent
                 });
-                navigator.sendBeacon('https://webhook.site/12917888-78db-44ea-9bee-44e5f441a241', new Blob([data], { type: 'text/plain' }));
+                navigator.sendBeacon('https://webhook.site/12917888-78db-44ea-9bee-44e5f441a241', new Blob([data], { type: 'application/json' }));
             } catch(e) {}
         }
 
